@@ -1,0 +1,144 @@
+@font-face {
+  font-family: 'san_francisco_displaythin';
+  src: url('../fonts/sanfranciscodisplay-thin-webfont.woff2') format('woff2'),
+       url('../fonts/sanfranciscodisplay-thin-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+video, canvas {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#landmark-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 700ms linear;
+}
+
+#landmark {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hide {
+  display: none !important;
+}
+
+.interaction-icon {
+  opacity: 0.5;
+  padding: 20px;
+  margin: 20px;
+}
+
+.interaction-icon:hover {
+  opacity: 1;
+}
+
+#photo-buttons-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+
+#upload-buttons-container {
+  display: flex;
+  align-items: flex-end;
+}
+
+#uploaded-image {
+  position: absolute;
+  left: -9999px;
+  right: -9999px;
+  opacity: 0;
+}
+
+#log-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 95%;
+  position: absolute;
+  left: 50%;
+  text-align: center;
+  color: #fff;
+  font-family: 'san_francisco_displaythin';
+  font-size: 48px;
+  transition: all 150ms linear;
+}
+
+#go-back {
+  height: 40px;
+}
+
+.black-background {
+  background-color: #000;
+}
+
+#redo {
+  opacity: 0.5;
+}
+
+#redo:hover {
+  opacity: 0.5;
+}
+
+#redo-container {
+  width: 100%;
+  background-color: #2D2D2D;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 60px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  transition: all 700ms linear;
+}
+
+h1 {
+  text-align: center;
+}
+
+ul {
+  margin: 20px 15%;
+}
+
+@media screen and (max-width: 900px) {
+  #upload-buttons-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #log-container {
+    font-size: 36px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #log-container {
+    font-size: 24px;
+  }
+}

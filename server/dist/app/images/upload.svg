@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="56px" viewBox="0 0 41 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
+    <title>upload</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="upload" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Group" transform="translate(1.000000, 1.000000)" stroke="#000000">
+            <polyline id="Path-6" points="10 18 0 18 0 54.013511 39.0000023 54.013511 39.0000023 18 29 18"></polyline>
+            <polyline id="Path-5" transform="translate(19.500000, 4.500000) rotate(-90.000000) translate(-19.500000, -4.500000) " points="15 14 24 4.5 15 -5"></polyline>
+            <path d="M19.5,0 L19.5,35" id="Path-7"></path>
+        </g>
+    </g>
+</svg>

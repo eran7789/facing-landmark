@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="55px" height="43px" viewBox="0 0 55 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
+    <title>take photo</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="take-photo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" stroke="#000000">
+            <path d="M20.1127389,1.12555994 L16.9741283,5.5 L5,5.5 C2.51471863,5.5 0.5,7.51471863 0.5,10 L0.5,38 C0.5,40.4852814 2.51471863,42.5 5,42.5 L50,42.5 C52.4852814,42.5 54.5,40.4852814 54.5,38 L54.5,10 C54.5,7.51471863 52.4852814,5.5 50,5.5 L38.0258717,5.5 L34.8872611,1.12555994 C34.6055131,0.732873508 34.1518158,0.5 33.6685099,0.5 L21.3314901,0.5 C20.8481842,0.5 20.3944869,0.732873508 20.1127389,1.12555994 Z" id="Combined-Shape"></path>
+            <circle id="Oval" cx="28" cy="24" r="11"></circle>
+            <circle id="Oval" cx="9.5" cy="11.5" r="2.5"></circle>
+        </g>
+    </g>
+</svg>
