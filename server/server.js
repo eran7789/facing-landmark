@@ -17,6 +17,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const validate = async (request, username, password, h) => {
 
     const validUsername = process.env.USER_NAME;
+
     if (username !== validUsername) {
         return { credentials: null, isValid: false };
     }

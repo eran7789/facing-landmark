@@ -29,7 +29,10 @@ export default class SvgDraw {
   }
 
   newCanvas = function(width, height) {
-    const viewBox = md.is('iPhone') ? `0 0 ${height} ${width}` : `0 0 ${width} ${height}`;
+    this.width = width;
+    this.height = height;
+    const switchViewBox = md.is('iPhone') || md.is('iPad');
+    const viewBox = switchViewBox ? `0 0 ${height} ${width}` : `0 0 ${width} ${height}`;
     this.svgStart = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="${viewBox}" x="0" y="0">`;
   }
 
@@ -55,6 +58,7 @@ export default class SvgDraw {
       attrs.fill = "none"
       attrs.stroke = color
       attrs['stroke-width'] = thickness;
+      attrs['vector-effect'] = 'non-scaling-stroke';
       var elem = this.element('line', attrs);
       this.body += elem;
       return this;
@@ -71,6 +75,7 @@ export default class SvgDraw {
       attrs.fill = "none"
       attrs.stroke = color
       attrs['stroke-width'] = thickness;
+      attrs['vector-effect'] = 'non-scaling-stroke';
       var elem = this.element('polyline', attrs);
       this.body += elem;
       return this;
@@ -79,8 +84,26 @@ export default class SvgDraw {
 
   }
 
-  export = function() {
-      return this.svgStart + this.body + this.svgEnd;
+  export = function(appendText, facesPosition) {
+      const width = facesPosition.right - facesPosition.left + 20;
+      const height = facesPosition.bottom - facesPosition.top + 20;
+      const viewBox = `0 0 ${width} ${height}`;
+      const svgStart = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="${viewBox}">`;
+      const fontSizeFactor = height / document.body.getBoundingClientRect().height;
+
+      // if (appendText) {
+      //   let text = '';
+
+      //   if (md.mobile() || md.tablet()) {
+      //     text = `<text x="${facesPosition.middle - 280}" y="${facesPosition.top - 60}" style="font-size: ${fontSize * 24};" id="landmark-text">${appendText}</text>`;
+      //   } else {
+      //     text = `<text x="${facesPosition.middle - 60}" y="${facesPosition.bottom + 20}" style="font-size: ${fontSizeFactor * 48};" id="landmark-text">${appendText}</text>`;
+      //   }
+
+      //   return svgStart + this.body + text + this.svgEnd;
+      // }
+      
+      return svgStart + this.body + this.svgEnd;
   }
 
   exportDataUrl = function() {

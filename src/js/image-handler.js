@@ -38,21 +38,25 @@ export default class ImageHandler {
 
   goToInitialState = () => {
     let pictureButton = document.getElementById('picture');
-    let redoButton = document.getElementById('go-back');
     const photoButtonsContainer = document.getElementById('photo-buttons-container');
     const uploadButtonsContainer = document.getElementById('upload-buttons-container');
+    const usePhotoButton = document.getElementById('use-photo');
+    const retakeButton = document.getElementById('retake');
 
     photoButtonsContainer.classList.add('hide');
     pictureButton.classList.add('hide');
-    redoButton.classList.add('hide');
+    retakeButton.classList.add('hide');
+    usePhotoButton.classList.add('hide');
     uploadButtonsContainer.classList.remove('hide');
+
+    photoButtonsContainer.style.backgroundColor = "initial";
+    photoButtonsContainer.style.justifyContent = "center";
 
     if (this.isMobile) {
       document.getElementById('upload').classList.add('hide');
     }
 
     pictureButton = removeAllEventListeners(pictureButton);
-    redoButton = removeAllEventListeners(redoButton);
 
     this.video.classList.add('hide');
     this.canvas.classList.add('hide');
@@ -64,50 +68,75 @@ export default class ImageHandler {
       audio: false,
       video: true
     };
+    const usePhotoButton = document.getElementById('use-photo');
+    const retakeButton = document.getElementById('retake');
+    const photoButtonsContainer = document.getElementById('photo-buttons-container');
+
+    retakeButton.classList.add('hide');
+    usePhotoButton.classList.add('hide');
+
+    photoButtonsContainer.style.backgroundColor = "transparent";
+    photoButtonsContainer.style.justifyContent = "center";
 
     navigator.mediaDevices.getUserMedia(constraints)
       .then(mediaStream => {
         this.video.srcObject = mediaStream;
 
         let pictureButton = document.getElementById('picture');
-        let redoButton = document.getElementById('go-back');
-        const photoButtonsContainer = document.getElementById('photo-buttons-container');
         const uploadButtonsContainer = document.getElementById('upload-buttons-container');
 
         photoButtonsContainer.classList.remove('hide');
         pictureButton.classList.remove('hide');
-        redoButton.classList.remove('hide');
         uploadButtonsContainer.classList.add('hide');
 
         pictureButton = removeAllEventListeners(pictureButton);
-        redoButton = removeAllEventListeners(redoButton);
 
         this.video.classList.remove('hide');
         this.canvas.classList.add('hide');
 
-        pictureButton.addEventListener('click', this.snapPicture);
-        redoButton.addEventListener('click', this.goToInitialState);
+        pictureButton.addEventListener('click', () => this.snapPicture(mediaStream));
       });
   }
 
-  snapPicture = () => {
+  snapPicture = (mediaStream) => {
     let pictureButton = document.getElementById('picture');
-    let redoButton = document.getElementById('go-back');
-    
+    let usePhotoButton = document.getElementById('use-photo');
+    let retakeButton = document.getElementById('retake');
+    let photoButtonsContainer = document.getElementById('photo-buttons-container');
+    const overlay = document.getElementById('overlay');
+    const constraints = {
+      audio: false,
+      video: true
+    };
+
     this.canvas.width = this.video.videoWidth;
     this.canvas.height = this.video.videoHeight;
     this.canvas.getContext('2d').drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+
+    overlay.classList.remove('hide');
     
-    this.canvas.classList.remove('hide');
-    this.video.classList.add('hide');
+    setTimeout(() => {
+      overlay.classList.add('hide');
 
-    redoButton = removeAllEventListeners(redoButton);
-    pictureButton = removeAllEventListeners(pictureButton);
+      setTimeout(() => {
+        this.video.classList.add('hide');
+        pictureButton.classList.add('hide')
+        this.canvas.classList.remove('hide');
+        retakeButton.classList.remove('hide');
+        usePhotoButton.classList.remove('hide');
 
-    redoButton.addEventListener('click', this.goToTakePictureState);
-    pictureButton.addEventListener('click', this.readSnappedPicture);
+        photoButtonsContainer.style.backgroundColor = "#000";
+        photoButtonsContainer.style.justifyContent = "space-between";
 
-    document.getElementById('photo-preview').srcObject.getVideoTracks().forEach(track => track.stop());
+        usePhotoButton = removeAllEventListeners(usePhotoButton);
+        retakeButton = removeAllEventListeners(retakeButton);
+
+        usePhotoButton.addEventListener('click', this.readSnappedPicture);
+        retakeButton.addEventListener('click', this.goToTakePictureState);
+
+        this.video.srcObject.getVideoTracks().forEach(track => track.stop());
+      }, 700);
+    }, 200);
   }
 
   readSnappedPicture = () => {
@@ -133,17 +162,21 @@ export default class ImageHandler {
   }
   
   imageUploaded = blob => {
-    const img = document.getElementById('uploaded-image');
+    const img = document.createElement('img');
     
-    img.classList.remove('hide');
+    // img.classList.remove('hide');
     img.src = window.URL.createObjectURL(blob);
+    img.onload = () => {
+      this.width  = img.naturalWidth  || img.width;
+      this.height = img.naturalHeight || img.height; 
+    }
 
     this.hideUploadButtons();
 
     document.body.classList.add('black-background');
 
     this.logger.startLogging();
-    this.logger.log(`Picture recieved: ${blob.name || 'from camera'}, size: ${this.returnFileSize(blob.size)}`);
+    this.logger.log(`Image received: ${blob.name || 'from camera'}`);
 
     this.fileReader.readAsDataURL(blob);
   };

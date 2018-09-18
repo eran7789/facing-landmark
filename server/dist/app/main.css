@@ -1,21 +1,49 @@
 @font-face {
   font-family: 'san_francisco_displaythin';
-  src: url(/app/fonts/sanfranciscodisplay-thin-webfont.afede6c0016f35cb6638d62ca10ba282.woff2) format('woff2'),
-       url(/app/fonts/sanfranciscodisplay-thin-webfont.a00feecb9bab9041909d92b840a37af9.woff) format('woff');
+  src: url(/app/fonts/SFProDisplay-Thin.16e844ac92f1030c7acd7e5ede40789c.woff2) format('woff2'),
+        url(/app/fonts/SFProDisplay-Thin.03404df387b5f79f56fe6e29682790a6.woff) format('woff');
   font-weight: normal;
   font-style: normal;
-
 }
 
-html, body, #root {
+@font-face {
+  font-family: 'san_francisco_ultralight';
+  src: url(/app/fonts/SFProDisplay-Ultralight.a01866edaa839e84c1253f3b548b2e37.woff2) format('woff2'),
+        url(/app/fonts/SFProDisplay-Ultralight.f9f8194e56d5423a115936d5b92afd8d.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+a {
+  color: white;
+}
+
+* {
+  font-family: 'san_francisco_displaythin';
+  font-size: 48px;
+}
+
+html, body, #root, #upload-container {
   margin: 0;
   height: 100%;
   width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 video, canvas {
-  height: 100%;
-  width: 100%;
+  min-height: 100vh;
+  min-width: 100vw; 
+  position: relative;
+  object-fit: cover;
+  background-color:  #000;
+}
+
+text {
+  fill: #fff;
 }
 
 #root {
@@ -37,10 +65,15 @@ video, canvas {
   transition: all 700ms linear;
 }
 
+line, polyline {
+  transition: all 700ms linear;
+}
+
 #landmark {
-  height: 100%;
-  width: 100%;
+  height: 70%;
+  width: 95%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -59,10 +92,63 @@ video, canvas {
   opacity: 1;
 }
 
+#picture {
+  background-image: url('/app/images/take-pic.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 50px;
+  width: 50px;
+  margin-bottom: 20px;
+}
+
+
+#picture:hover {
+  background-image: url('/app/images/take-pic-hover.svg');
+}
+
+body:after {
+  content: url('/app/images/take-pic.svg') url('/app/images/take-pic-hover.svg');
+  display: none; 
+}
+
+#overlay {
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000;
+}
+
 #photo-buttons-container {
+  position: absolute;
+  width: 97vw;
+  bottom: 0;
+  z-index: 2;
+  opacity: 0.7;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  height: 80px;
+  font-size: 20px;
+  padding: 0 40px;
+  transition: all 150ms linear;
+}
+
+#retake, #use-photo {
+  font-size: 20px !important;
+}
+
+#use-photo, #retake {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 150ms linear;
+}
+
+#use-photo:hover, #retake:hover {
+  opacity: 1;
 }
 
 #upload-buttons-container {
@@ -85,13 +171,23 @@ video, canvas {
   left: 50%;
   text-align: center;
   color: #fff;
-  font-family: 'san_francisco_displaythin';
-  font-size: 48px;
-  transition: all 150ms linear;
+  /* transition: translate 30ms linear; */
+  white-space: pre-line;
 }
 
 #go-back {
   height: 40px;
+}
+
+#landmark-text {
+  opacity: 0;
+  color: #fff;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  transition: all 700ms linear;
 }
 
 .black-background {
@@ -104,18 +200,6 @@ video, canvas {
 
 #redo:hover {
   opacity: 0.5;
-}
-
-#redo-container {
-  width: 100%;
-  background-color: #2D2D2D;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 60px;
-  padding: 0 20px;
-  box-sizing: border-box;
-  transition: all 700ms linear;
 }
 
 h1 {
@@ -132,14 +216,16 @@ ul {
     align-items: center;
   }
 
-  #log-container {
-    font-size: 36px;
+  * {
+    font-size: 42px;
+    font-family: 'san_francisco_ultralight';
   }
 }
 
 @media screen and (max-width: 500px) {
-  #log-container {
+  * {
     font-size: 24px;
+    font-family: 'san_francisco_displaythin';
   }
 }
 

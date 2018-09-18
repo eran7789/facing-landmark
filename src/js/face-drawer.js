@@ -1,4 +1,16 @@
+import { flow, maxBy, minBy, lowerCase, identity, map } from 'lodash/fp';
+
 import SvgDraw from 'js/svg-draw';
+import { mapWithKeys } from 'js/utils';
+
+const EYE_STATUS_MAP = {
+  occlusion: 'eye is blocked',
+  no_glass_eye_open: 'no glasses eye is open',
+  normal_glass_eye_close: 'wear\'s glasses eye is closed',
+  normal_glass_eye_open: 'wear\'s glasses eye is open',
+  dark_glasses: 'wear\'s dark glasses',
+  no_glass_eye_close: 'no glasses eye is closed'
+};
 
 export default class FaceDrawer {
   constructor(logger) {
@@ -16,7 +28,7 @@ export default class FaceDrawer {
   }
 
   toReal = function(val, parent) {
-      return val;//this.round((val / 100 * parent),2);
+      return val - parent + 10;//this.round((val / 100 * parent),2);
   }
 
   drawNose = function(face, parentData, thickness) {
@@ -25,9 +37,9 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       this.svgDraw.polyline(coords, thickness, "white")
   }
@@ -40,9 +52,9 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
       }
       this.svgDraw.polyline(coords,thickness, "white")
   }
@@ -53,10 +65,10 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       this.svgDraw.polyline(coords, thickness, "white")
 
@@ -65,15 +77,15 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       this.svgDraw.polyline(coords, thickness, "white")
 
       //var area=face['left_eye_pupil']
-      //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+      //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
 
   }
 
@@ -83,10 +95,10 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       this.svgDraw.polyline(coords,thickness, "white")
 
@@ -95,19 +107,19 @@ export default class FaceDrawer {
       for (var i = 0; i < noseArr.length; i++) {
           var name = noseArr[i];
           var area = face[name];
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       /*var area=face['left_eye_center']
-      this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 2, 'white')
+      this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 2, 'white')
       var area=face['right_eye_center']
-      this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 2, 'white')*/
+      this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 2, 'white')*/
       this.svgDraw.polyline(coords, thickness, "white")
 
       //var area=face['left_eye_pupil']
-      //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+      //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
 
   }
 
@@ -118,10 +130,10 @@ export default class FaceDrawer {
           var name = noseArr[i];
           var area = face[name];
           //console.error('height',parentData['img_height'],'width',parentData['img_width'])
-          var coord = { x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) };
+          var coord = { x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) };
           coords.push(coord);
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 1.5, 'white')
-          //this.svgDraw.point({ x: this.toReal(area.x, parentData['img_width']), y: this.toReal(area.y, parentData['img_height']) }, 4, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 1.5, 'white')
+          //this.svgDraw.point({ x: this.toReal(area.x, this.facesPositions.left), y: this.toReal(area.y, this.facesPositions.top) }, 4, 'white')
       }
       var height = this.toReal(parentData.height, parentData['img_height']),
           width = this.toReal(parentData.width, parentData['img_width']);
@@ -335,8 +347,8 @@ export default class FaceDrawer {
           var start = face[vartice[0]];
           var stop = face[vartice[1]];
           this.svgDraw.line({
-              start:{ x: this.toReal(start.x, parentData['img_width']), y: this.toReal(start.y, parentData['img_height']) },
-              stop:{ x: this.toReal(stop.x, parentData['img_width']), y: this.toReal(stop.y, parentData['img_height']) }
+              start:{ x: this.toReal(start.x, this.facesPositions.left), y: this.toReal(start.y, this.facesPositions.top) },
+              stop:{ x: this.toReal(stop.x, this.facesPositions.left), y: this.toReal(stop.y, this.facesPositions.top) }
           }, thickness, '#fff');
       }
   }
@@ -379,36 +391,105 @@ export default class FaceDrawer {
     this.newDrawing({ height: parentData.img_height, width: parentData.img_width });
 
     if (faces.length > 0) {
-      this.logger.log(`Drawing ${faceDescription}`);
-
       let count = 0;
 
+      this.facesPositions = this.calculateFacesPosition(faces);
       faces.forEach(face => {
         count += 1;
+  
         if (faces.length > 1) {
-          this.logger.log(`Drawing face number ${count}`);
+          this.logger.log(`Analyzing landmarks for face number ${count}...`, false, 1000);
+        } else {
+          this.logger.log('Analyzing landmarks...', false, 1000);
         }
+
+        const emotion = flow(
+          mapWithKeys((value, key) => ({ emotion: key, value })),
+          maxBy(item => item.value),
+          (emotionObject) => emotionObject.emotion
+        )(face.attributes.emotion);
+        const leftEyeStatus = flow(
+          mapWithKeys((value, key) => ({ status: key, value })),
+          maxBy(item => item.value),
+          (statusObject) => statusObject.status
+        )(face.attributes.eyestatus.left_eye_status);
+        const rightEyeStatus = flow(
+          mapWithKeys((value, key) => ({ status: key, value })),
+          maxBy(item => item.value),
+          (statusObject) => statusObject.status
+        )(face.attributes.eyestatus.right_eye_status);
+
+        this.logger.log(`Age: ${lowerCase(face.attributes.age.value)}`);
+        this.logger.log(`Gender: ${lowerCase(face.attributes.gender.value)}`);
+        this.logger.log(`Smiling value: ${lowerCase(face.attributes.smile.value)}`);
+        this.logger.log(`Emotion: ${lowerCase(emotion)}`);
+        this.logger.log(`Ethnicity: ${lowerCase(face.attributes.ethnicity.value)}`);
+        this.logger.log(`Left eye status: ${EYE_STATUS_MAP[leftEyeStatus]}`);
+        this.logger.log(`Right eye status: ${EYE_STATUS_MAP[rightEyeStatus]}`);
 
         this.draw(face, parentData, thickness);
       });
 
-      var bs = this.svgDraw.export();
+      var bs = this.svgDraw.export('Identification stored', this.calculateFacesPosition(faces));
 
-      this.logger.log(`Finished drawing ${faceDescription}`);
+      this.logger.log('Calibrating values...');
+      this.logger.log(`Identification ${faces.length > 1 ? 'profiles' : 'profile'} created...`);
 
       if (window.location.pathname === '/landmark/download') {
         this.saveFile(faces, parentData);
       }
     } else {
-      this.logger.log('No Faces detected');
+      this.logger.immediateStop('No Faces detected');
     }
 
-    this.logger.stopLogging(bs);
+    this.logger.stopLogging(bs, faces.length > 1);
+  }
+
+  findHeighestFacePoint = face => {
+    const landmarks = map(identity, face.landmark);
+
+    return minBy('y', landmarks).y;
+  }
+
+  findLowestFacePoint = face => {
+    const landmarks = map(identity, face.landmark);
+
+    return maxBy('y', landmarks).y;
+  }
+
+  findLeftMostFacePoint = face => {
+    const landmarks = map(identity, face.landmark);
+
+    return minBy('x', landmarks).x;
+  }
+
+  findRightMostFacePoint = face => {
+    const landmarks = map(identity, face.landmark);
+
+    return maxBy('x', landmarks).x;
+  }
+
+  calculateFacesPosition = (faces) => {
+    const topFace = minBy(this.findHeighestFacePoint, faces);
+    const bottomFace = maxBy(this.findLowestFacePoint, faces);
+    const leftFace = minBy(this.findLeftMostFacePoint, faces);
+    const rightFace = maxBy(this.findRightMostFacePoint, faces);
+    // const bottom = bottomFace.face_rectangle.top + bottomFace.face_rectangle.height;
+    // const left = minBy(face => face.face_rectangle.left, faces).face_rectangle.left;
+    // const rightFace = maxBy(face => face.face_rectangle.left, faces);
+    // const right = rightFace.face_rectangle.left + rightFace.face_rectangle.width;
+
+    return {
+      left: this.findLeftMostFacePoint(leftFace),
+      right: this.findRightMostFacePoint(rightFace),
+      top: this.findHeighestFacePoint(topFace),
+      bottom: this.findLowestFacePoint(bottomFace)
+    }
   }
 
   saveFile = (faces, parentData) => {
-      var data = this.svgDraw.export();
-      console.log(blob)
+      var filename = 'facing-landmark.svg';
+      var data = this.svgDraw.export(false, this.calculateFacesPosition(faces));
       var blob = new Blob([data], { type: 'image/svg+xml' });
       if (window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveBlob(blob, filename);

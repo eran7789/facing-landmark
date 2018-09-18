@@ -1,32 +1,35 @@
-import { isEmpty } from 'lodash/fp';
+import { isEmpty, head } from 'lodash/fp';
+import MobileDetect from 'mobile-detect';
 
 import resolver, { stopAllResolvers } from 'js/resolver';
 
 export default class Logger {
-  constructor() {
+  constructor(noSleep) {
+    this.noSleep = noSleep;
     this.logContainer = document.getElementById('log-container');
   }
 
-  getOptions = logMessage => ({
+  getOptions = (logMessage, nextTimout) => ({
     // Initial position
     offset: 0,
     // Timeout between each random character
-    timeout: 15,
+    timeout: 0,
     // Number of random characters to show
-    iterations: 5,
+    iterations: 2,
     // Random characters to pick from
-    characters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'x', '#', '%', '&', '-', '+', '_', '?', '/', '\\', '='],
+    characters: ['$', '@', '!', ',', '#', '%', '&', '-', '+', '_', '?', '/', '\\', '=', ';'],
     // String to resolve
     resolveString: logMessage,
     // The element
-    element: this.logContainer
+    element: this.logContainer,
+    nextCallbackTimeout: nextTimout || 0
   })
 
   getStaticOptions = () => ({
     // Initial position
     offset: 0,
     // Timeout between each random character
-    timeout: 100,
+    timeout: 60,
     // Number of random characters to show
     iterations: 0,
     // Random characters to pick from
@@ -43,11 +46,23 @@ export default class Logger {
     this.shouldStop = false;
   }
 
-  stopLogging = svgElement => {
+  stopLogging = (svgElement, multipleFaces) => {
     this.shouldStop = true;
 
     if (svgElement) {
-      document.getElementById('landmark-content').innerHTML = svgElement;
+      const md = new MobileDetect(window.navigator.userAgent);
+      const textElement = document.createElement('div');
+
+      textElement.setAttribute('id', 'landmark-text');
+      textElement.textContent = multipleFaces ? "Identities stored" : "Identity stored";
+
+      document.getElementById('landmark').innerHTML = svgElement;
+
+      if (md.mobile() || md.tablet()) {
+        document.getElementById('landmark-content').prepend(textElement);
+      } else {
+        document.getElementById('landmark-content').append(textElement);
+      }
     }
   }
 
@@ -59,54 +74,90 @@ export default class Logger {
 
   immediateStop = (message) => {
     this.logOptionsQueue = [];
-    stopAllResolvers();
-    resolver(this.getOptions(message), () => {
-      this.logContainer.textContent = message;
-      this.logContainer.style.top = '50%';
-      document.getElementById('root').style.justifyContent = 'flex-start';
-      document.getElementById('redo-container').classList.remove('hide');
-    }, true);
+    // stopAllResolvers();
+    this.immediateStopFlag = true;
+    this.immediateStopMessage = message;
+    this.noSleep.disable();
+
+    if (isEmpty( this.logOptionsQueue)) {
+      this.resolverCallback();
+    }
   }
 
-  log = logMessage => {
-    if (isEmpty(this.logOptionsQueue)) {
-      this.logOptionsQueue.push(this.getStaticOptions());
-      this.logOptionsQueue.push(this.getOptions(logMessage));
+  log = (logMessage, breakAfter, nextTimout) => {
+    if (!this.firstLogingOccured) {
+      this.firstLogingOccured = true;
 
-      resolver(this.logOptionsQueue.shift(), this.resolverCallback);
+
+      if (breakAfter) {
+        this.logOptionsQueue.push(this.getStaticOptions());
+      }
+      resolver(this.getOptions(logMessage), this.resolverCallback, nextTimout);
 
       return;
     }
-    
-    this.logOptionsQueue.push(this.getStaticOptions());
-    this.logOptionsQueue.push(this.getOptions(logMessage));
+
+    if (isEmpty(this.logOptionsQueue)) {
+      this.logOptionsQueue.push(this.getOptions(logMessage, nextTimout));
+      if (breakAfter) {
+        this.logOptionsQueue.push(this.getStaticOptions());
+      }
+
+      if (this.notRunning) {
+        this.resolverCallback();
+      }
+
+      return;
+    }
+
+    this.logOptionsQueue.push(this.getOptions(logMessage, nextTimout));
+    if (breakAfter) {
+        this.logOptionsQueue.push(this.getStaticOptions());
+      }
   }
 
   resolverCallback = () => {
+    if (this.immediateStopFlag) {
+      this.logContainer.style.transition = "";
+      this.logContainer.style.transform = "";
+      this.logContainer.style.position = "static";
+      this.logContainer.style.left = "initial";
+      this.logContainer.innerHTML = `<div style="width: 100%;">${this.immediateStopMessage}</div> <div  style="width: 100%;"><a href="">Try again</a></div>`;
+
+      return;
+    }
+
     if (isEmpty(this.logOptionsQueue) && this.shouldStop) {
       setTimeout(() => {
-        const redoButton = document.getElementById('redo-container');
         const landmark = document.getElementById('landmark-content');
 
-        redoButton.style.opacity = 0;
-        redoButton.classList.remove('hide');
         landmark.style.opacity = 0;
         landmark.classList.remove('hide');
 
         setTimeout(() => {
           landmark.style.opacity = 1;
+          setTimeout(() => {
+            document.getElementById('landmark-text').style.opacity = 1;
+            setTimeout(() => {
+              const lines = document.getElementsByTagName('line');
+              for (let i = 0; i < lines.length; i++) {
+                lines[i].style.opacity = 0;
+              }
+              const polylines = document.getElementsByTagName('polyline')
+              for (let i = 0; i < polylines.length; i++) {
+                polylines[i].style.opacity = 0;
+              }
+              setTimeout(() => {
+                document.body.style.transition = 'all 4s linear';
+                document.body.classList.remove('black-background');
+                this.noSleep.disable();
+              }, 3000);
+            }, 2000);
+          }, 3000);
         }, 0);
 
         if (!this.keepAlive) {
           this.logContainer.classList.add('hide');
-        }
-
-        if (!this.keepAlive) {
-          setTimeout(() => {
-            redoButton.style.opacity = 1;
-          }, 5000);
-        } else {
-          redoButton.style.opacity = 1;
         }
       }, 1000);
 
@@ -114,9 +165,12 @@ export default class Logger {
     }
 
     if (isEmpty(this.logOptionsQueue)) {
+      this.notRunning = true;
+
       return;
     }
-    
+
+    this.notRunning = false;
     resolver(this.logOptionsQueue.shift(), this.resolverCallback);
   }
 }

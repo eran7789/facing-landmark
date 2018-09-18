@@ -1,3 +1,5 @@
+import { map } from 'lodash/fp';
+
 export const removeAllEventListeners = (element) => {
   const newElement = element.cloneNode(false);
 
@@ -7,3 +9,5 @@ export const removeAllEventListeners = (element) => {
 
   return newElement;
 }
+
+export const mapWithKeys = map.convert({ cap: false });

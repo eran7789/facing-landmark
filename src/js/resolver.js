@@ -1,5 +1,27 @@
 let timeouts = [];
 
+const setTimeout = (callback, timeout) => {
+  let start = null;
+  let ids = [];
+
+  function execute(timestamp) {
+    if (!start) { start = timestamp };
+    const progress = timestamp - start;
+    
+    if (progress < timeout) {
+      ids = [...ids, window.requestAnimationFrame(execute)];
+    } else {
+      callback();
+    }
+
+    return ids;
+  }
+
+  ids = [...ids, window.requestAnimationFrame(execute)];
+
+  return ids;
+};
+
 const resolver = (options, callback) => {
   // The string to resolve
   const resolveString = options.resolveString;
@@ -41,7 +63,7 @@ const resolver = (options, callback) => {
       }
     }, timeout);
 
-    timeouts.push(currentTimeout);
+    timeouts = [...timeouts, ...currentTimeout];
   };
   
   function doResolverEffect(options, callback, keepAlive) {
@@ -69,9 +91,9 @@ const resolver = (options, callback) => {
 
             setTimeout(() => {
               callback();
-            }, 100);
-          }, 100);
-        }, 300);
+            }, combinedOptions.nextCallbackTimeout || 0);
+          }, 0);
+        }, 0);
       }
     });
   };
@@ -80,7 +102,7 @@ const resolver = (options, callback) => {
 }
 
 export const stopAllResolvers = () => {
-  timeouts.forEach(timeout => window.clearTimeout(timeout));
+  timeouts.forEach(timeout => window.cancelAnimationFrame(timeout));
   timeouts = [];
 }
 

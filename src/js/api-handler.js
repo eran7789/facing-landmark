@@ -8,21 +8,21 @@ export default class ApiHandler {
   API_BASE_URL = 'https://api-us.faceplusplus.com/facepp/v3/detect';
 
   onImageUploaded = imgBlob => {
-    this.logger.log('Detecting faces');
+    this.logger.log('Detecting faces', true);
     this.callApi(imgBlob);
   }
 
   handleSuccess = response => {
     if (response.faces.length === 0) {
-      this.logger.stopAfter('0 Faces detected');
+      this.logger.immediateStop('0 Faces detected');
     } else if (typeof this.success === 'function') {
-      this.logger.log(`${response.faces.length} ${response.faces.length === 1 ? 'Face' : 'Faces'} detected`);
+      this.logger.log(`${response.faces.length} ${response.faces.length === 1 ? 'Face' : 'Faces'} detected`, true);
       this.success(response);
     }
   }
 
   handleError = () => {
-    this.logger.immediateStop('Face detection failed, please try again');
+    this.logger.immediateStop('Face detection failed');
 
     if (typeof this.error === 'function') {    
       this.error();
@@ -66,7 +66,7 @@ export default class ApiHandler {
     fd.append('api_key', process.env.API_KEY);
     fd.append('api_secret', process.env.API_SECRET);
     fd.append('return_landmark', 1);
-    fd.append('return_attributes', 'gender');
+    fd.append('return_attributes', 'gender,age,smiling,emotion,ethnicity,eyestatus');
     fd.append('image_base64', imgBlob);
 
     xhr.open('POST', this.API_BASE_URL);

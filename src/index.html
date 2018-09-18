@@ -15,24 +15,25 @@
     <div id="upload-container">
         <video id="photo-preview" class="hide" playsinline autoplay></video>
         <canvas id="canvas" class="hide"></canvas>
-        <img id="uploaded-image" alt="uploaded image"/>
         <div id="upload-buttons-container">
           <img id="upload" class="interaction-icon hide" src="/app/images/upload.svg" alt="upload" />
           <img id="take-photo" class="interaction-icon hide" src="/app/images/take-photo.svg" alt="take photo" />
         </div>
         <div id="photo-buttons-container" class="hide">
-          <img id="picture" class="interaction-icon" src="/app/images/take-photo.svg" alt="snap picture" />
-          <img id="go-back" class="interaction-icon" src="/app/images/redo-black.svg" alt="go back" />
-          </div>
+          <div id="picture" src="/app/images/take-pic.svg" alt="snap picture" ></div>
+          <div id="retake" class="hide">retake</div>
+          <div id="use-photo" class="hide">use photo</div>
+        </div>
         <form class="hide">
           <input id="upload-input" type='file' accept="image/png, image/jpeg" />
         </form>
     </div>
     <div id="landmark-content" class="hide">
-      <div id="landmark" class="hide" type=""></div>
+      <div id="landmark" type=""></div>
     </div>
     <div id="log-container" class="hide">
     </div>
+    <div id="overlay" class="hide"></div>
   </div>
 </body>
 </html>
