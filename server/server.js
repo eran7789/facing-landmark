@@ -124,6 +124,14 @@ const init = async () => {
 
   await server.route({
     method: 'GET',
+    path: '/index.html',
+    handler: (request, h) => {
+      return h.file('./dist/app/index.html');
+    }
+  });
+
+  await server.route({
+    method: 'GET',
     path: '/app/{filepath*}',
     handler: (request, h) => {
       return h.file(`./dist/app/${request.params.filepath}`);
@@ -138,7 +146,7 @@ const init = async () => {
 
       return h.file('./dist/app/404.html').code(404);
     }
-  })
+  });
 
   await server.start();
   console.log(`Server running at: ${server.info.uri}`);
