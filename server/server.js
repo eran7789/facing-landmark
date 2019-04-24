@@ -110,7 +110,7 @@ const init = async () => {
     method: 'GET',
     path: '/',
     handler: (request, h) => {
-      return h.file('./dist/app/index.html');
+      return h.file('./server/dist/app/index.html');
     }
   });
 
@@ -118,7 +118,7 @@ const init = async () => {
     method: 'GET',
     path: '/index.html.var',
     handler: (request, h) => {
-      return h.file('./dist/app/index.html');
+      return h.file('./server/dist/app/index.html');
     }
   });
 
@@ -126,7 +126,7 @@ const init = async () => {
     method: 'GET',
     path: '/index.html',
     handler: (request, h) => {
-      return h.file('./dist/app/index.html');
+      return h.file('./server/dist/app/index.html');
     }
   });
 
@@ -134,7 +134,7 @@ const init = async () => {
     method: 'GET',
     path: '/app/{filepath*}',
     handler: (request, h) => {
-      return h.file(`./dist/app/${request.params.filepath}`);
+      return h.file(`./server/dist/app/${request.params.filepath}`);
     }
   });
 
@@ -144,7 +144,7 @@ const init = async () => {
     handler: (request, h) => {
       console.log(`404 on route ${request.params.any}`);
 
-      return h.file('./dist/app/404.html').code(404);
+      return h.file('./server/dist/app/404.html').code(404);
     }
   });
 
