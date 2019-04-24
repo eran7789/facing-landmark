@@ -7,8 +7,9 @@
     "test": "test",
     "build": "NODE_ENV=production webpack --progress --config webpack.config.js",
     "build:dev": "NODE_ENV=development webpack --progress --config webpack.config.js",
-    "start": "webpack-dev-server",
-    "start:dev": ""
+    "start": "cd server && nodemon server.js",
+    "start:dev": "webpack-dev-server",
+    "heroku-postbuild": "cd server && npm i"
   },
   "author": "Eran Keren",
   "license": "ISC",
@@ -32,7 +33,6 @@
     "file-loader": "1.1.11",
     "html-webpack-plugin": "3.2.0",
     "mini-css-extract-plugin": "0.4.1",
-    "nodemon": "^1.18.11",
     "postcss-loader": "2.1.6",
     "url-loader": "1.0.1",
     "webpack": "4.16.1",
