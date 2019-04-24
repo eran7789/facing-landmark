@@ -2,14 +2,13 @@
   "name": "matan-project",
   "version": "1.0.0",
   "description": "face detection drawings",
-  "main": "index.js",
+  "main": "server/server.js",
   "scripts": {
     "test": "test",
     "build": "NODE_ENV=production webpack --progress --config webpack.config.js",
     "build:dev": "NODE_ENV=development webpack --progress --config webpack.config.js",
     "start": "cd server && nodemon server.js",
-    "start:dev": "webpack-dev-server",
-    "heroku-postbuild": "cd server && npm i"
+    "start:dev": "webpack-dev-server"
   },
   "author": "Eran Keren",
   "license": "ISC",
@@ -17,7 +16,12 @@
     "lodash": "4.17.10",
     "mobile-detect": "1.4.2",
     "nosleep.js": "0.7.0",
-    "webrtc-adapter": "6.3.0"
+    "webrtc-adapter": "6.3.0",
+    "dotenv": "6.0.0",
+    "fast-xml-parser": "3.12.0",
+    "hapi": "17.5.3",
+    "hapi-auth-basic": "^5.0.0",
+    "inert": "5.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.54",
