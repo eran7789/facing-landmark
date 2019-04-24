@@ -7,7 +7,7 @@
     "test": "test",
     "build": "NODE_ENV=production webpack --progress --config webpack.config.js",
     "build:dev": "NODE_ENV=development webpack --progress --config webpack.config.js",
-    "start": "nodemon server/server.js",
+    "start": "node server/server.js",
     "start:dev": "webpack-dev-server"
   },
   "author": "Eran Keren",
