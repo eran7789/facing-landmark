@@ -14,6 +14,8 @@ const MAX_FILES_NUM = 10000;
 const HTTP_PORT = process.env.PORT || '8080';
 const isProduction = process.env.NODE_ENV === 'production';
 
+console.log(process.env.USER_NAME)
+
 const validate = async (request, username, password, h) => {
 
     const validUsername = process.env.USER_NAME;
