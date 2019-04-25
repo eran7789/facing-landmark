@@ -3,18 +3,16 @@
 require('dotenv').config();
 
 const Hapi = require('hapi');
-const Iner = require('inert');
+// const Iner = require('inert');
 
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
-const xmlParser = require('fast-xml-parser');
+// const fs = require('fs');
+// const path = require('path');
+// const xmlParser = require('fast-xml-parser');
 
-const MAX_FILES_NUM = 10000;
+// const MAX_FILES_NUM = 10000;
 const HTTP_PORT = process.env.PORT || '8080';
-const isProduction = process.env.NODE_ENV === 'production';
-
-console.log(process.env.USER_NAME)
+// const isProduction = process.env.NODE_ENV === 'production';
 
 const validate = async (request, username, password, h) => {
 
@@ -51,7 +49,7 @@ const init = async () => {
       auth: 'simple'
     },
     handler: (request, h) => {
-      return h.file('./dist/app/index.html');
+      return h.file('./server/dist/app/index.html');
     }
   })
 
